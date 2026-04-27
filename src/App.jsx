@@ -1,54 +1,59 @@
-import React from 'react'
-import Page1 from './componet/Page1/Page1'
-import Page2 from './componet/Page2/Page2'
-
+import React, { useState } from 'react'
+import { X } from 'lucide-react';
 const App = () => {
-  const users = [
-  {
-    id: 1,
-    name: "Sarah Jenkins",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    feedback: "It makes transferring money between my savings , and the fraud alerts make me feel secure.",
-    tag: "Satisfied",
-    color:"green"
-  },
-  {
-    id: 2,
-    name: "Marcus Thorne",
-    image: "https://images.unsplash.com/photo-1665436035665-d7dad9086ee2?q=80&w=459&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    feedback: "I have a checking account, but I still go to the check casher for my checks because bank holds my fund.",
-    tag:"Underbanked",
-    color:"blue"
-  },
-  {
-    id: 3,
-    name: "Elena Rodriguez",
-    image: "https://images.unsplash.com/photo-1600275669283-4bf2bb8a990c?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    feedback: "There aren't any branches near my area, so making cash deposits is inconvenient.",
-    tag:"Underserved",
-    color:"red"
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    image: "https://images.unsplash.com/photo-1752170080668-fa46b5539cf4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHdvcmtpbmclMjBwcm9mZXNzaW9uYWx8ZW58MHwxfDB8fHww",
-    feedback: "The bank tends to hold my funds for too long, which makes it hard to access money when I need it.",
-    tag:"Underbanked",
-    color:"orange"
-  },
-  {
-    id: 5,
-    name: "Priya Patel",
-    image: "https://images.unsplash.com/photo-1587614203976-365c74645e83?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    feedback: " Great app with smooth navigation and transfers. It makes managing my daily banking quick.",
-    tag:"Satisfied",
-    color:"purple"
-  }
 
-  ]
+  const [title, setTitle] = useState('')
+  const [details, setDetails] = useState('')
+  const [task, setTask] = useState([])
+  
+  const submitHandler = (e) =>{
+    e.preventDefault();
+   
+
+  const copyTask = [...task];
+  copyTask.push({title,details})
+  
+  setTask(copyTask);
+  console.log(copyTask)
+
+    setTitle('');
+    setDetails(''); 
+
+    
+  }
+ 
+  const deleteNote = (idx) =>{
+      const copyTask = [...task]
+      copyTask.splice(idx,1)
+
+      setTask(copyTask)
+    }
+
   return (
-    <div>
-      <Page1 users={users}/>
+    <div className='h-screen bg-black text-white p-5 lg:flex'> 
+      <form onSubmit={(e) => {submitHandler(e)}} 
+      className='flex gap-4 lg:w-1/2 flex-col items-start p-10'>
+        <input className='px-5 py-2 w-full border-2 rounded' type='text' placeholder='Enter notes heading' value={title} onChange={(e)=>setTitle(e.target.value)}/>
+
+      <textarea className='px-5 w-full py-2 border-2 rounded h-20' type='text' placeholder='Enter details' value={details} onChange={(e)=>setDetails(e.target.value)}/>
+      <button className='bg-white w-full text-black px-5 py-2 rounded cursor-pointer hover:scale-95 active:bg-amber-900'>Add Note</button>
+      </form>
+      <div className='lg:w-1/2 p-8 lg:border-l-2'>
+        <h1 className='text-xl font-bold'>Your Notes</h1>
+        <div className='flex flex-wrap gap-5 mt-3 overflow-auto h-[90%] whitespace-pre-wrap break-words'>
+          {task.map(function(elem,idx){
+            return <div key={idx} className="relative flex flex-col justify-between items-start h-52 w-40 bg-cover rounded-2xl text-black p-4 bg-[url('https://static.vecteezy.com/system/resources/previews/037/152/677/non_2x/sticky-note-paper-background-free-png.png')]">
+              <div>
+              <h3 className='text-xl font-bold leading-tight py-1.5'>{elem.title}</h3>
+              <p className='mt-2 font-medium leading-tight'>{elem.details}</p>
+              </div>
+              <button onClick={()=>{
+                deleteNote(idx)
+              }} className='w-full text-white bg-red-600 rounded-2xl text-xs font-bold py-1.5 cursor-pointer active:scale-95'>Delete</button>
+            </div>
+          })}
+        </div>
+      </div>
     </div>
   )
 }
